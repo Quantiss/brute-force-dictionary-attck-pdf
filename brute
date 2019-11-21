@@ -1,0 +1,39 @@
+import PyPDF2
+print('**************************************************************************************************************\n')
+in_f = input('Please enter the filename (make sure the file is in the same directory as the program) - ')
+output = input('Please enter what you would like to call the decrypted file - ')
+passwordList = input('Please enter the dictionary list filename (make sure the file is in the same directory as the program) - ')
+print('\n**************************************************************************************************************\n')
+
+def decrypt_pdf(in_path, out_path, passwordList):
+
+    with open(in_path,'rb') as in_file, \
+        open(out_path,'wb') as out_file, \
+            open(passwordList) as passList:
+
+        pdfReader = PyPDF2.PdfFileReader(in_file)
+
+        pList = passList.readlines()
+
+        if pdfReader.isEncrypted == True:
+
+            for PossP in pList:
+                print(PossP)
+                print(PossP.lower())
+
+                pdfReader.decrypt(PossP)
+                pdfReader.decrypt(PossP.lower())
+
+
+                if pdfReader.isEncrypted == False:
+                    print(PossP)
+                    break
+
+        pdfWriter = PyPDF2.PdfFileWriter()
+
+        for page in range(pdfReader.numPages()):
+            pdfWriter.addPage(pdfReader.getPage(page))
+
+        pdfWriter.write(out_file)
+
+decrypt_pdf(in_f, output, passwordList)
